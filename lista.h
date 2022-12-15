@@ -1,9 +1,9 @@
-// Fila
+// Usar uma pilha para salvar os historicos de tranferecia
 
 typedef struct Histo
 {
-    char cpf[30];
-    float valor;
+    char cpf_send[30], cpf_rcv[30];
+    float valor_send, valor_rcv;
 }Histo;
 
 typedef struct No2
@@ -12,10 +12,9 @@ typedef struct No2
     struct No2* prox;
 }No2;
 
-typedef struct Fila{
-    No2 *ini;
-    No2 *fim;
-}Fila;
+typedef struct FiPilhala{
+    No2 topo;
+}Pilha;
 
 // fim
 
@@ -29,7 +28,7 @@ typedef struct Conta
 
 typedef struct No
 {
-   Fila *f;
+   Pilha *p;
    Conta conta;
    struct No *prox;
 }No;
