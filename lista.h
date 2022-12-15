@@ -9,11 +9,11 @@ typedef struct Histo
 typedef struct No2
 {
     Histo h;
-    struct No2* prox;
+    struct No2 *prox;
 }No2;
 
-typedef struct FiPilhala{
-    No2 topo;
+typedef struct Pilha{
+    No2 *topo;
 }Pilha;
 
 // fim
