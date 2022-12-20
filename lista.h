@@ -60,6 +60,7 @@ void saque(No *c);
 void editar_infos(No *c, Lista *lista);
 bool remover_conta(No *c, Lista *lista);
 float qtd_dinheiro(Lista *lista);
+void data_hora();
 
 //----------- Funções Adm ----------
 void adm(Lista*);

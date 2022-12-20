@@ -1,5 +1,6 @@
 #include "bibliotecas.h"
 //gcc main.c lista.c -o main.exe
+// Fazer uma fucção que salve historicos de saque, deposito, trnasferencia, data de criação, data de login, data de alteração
 
 void menu(){
     int op, controle = 0;
@@ -257,7 +258,7 @@ void adm(Lista *lista){
                 printf("\nTotal de Dinheiro no banho\nR$ %.2f", total);
                 printf("\n*********************\n");
             break;
-        case 3:
+        case 3: data_hora();
             break;
         
         default: if(op!=0) printf("\nOpcao Invalida");
@@ -360,15 +361,12 @@ No* transferencia(Lista *lista, No *c){
             }else{
                 printf("\nOpcao invalida\n");
             }
-           
-
         } else {
             printf("\nCPF nao exite em nosso sistema\n");
             painel(c, lista);
         }
         return aux;
     }
-
 }
 
 void editar_infos(No *c, Lista *lista){
@@ -455,6 +453,16 @@ float qtd_dinheiro(Lista *lista){
     }
 
     return total;
+}
+void data_hora(){
+    time_t tempo;
+    tempo = time(NULL);
+    
+    struct tm tm = *localtime(&tempo);
+    printf("\n%d/%d/%d\n", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
+
+    printf("\n%d:%d:%d\n", tm.tm_hour, tm.tm_min, tm.tm_sec);
+    system("pause");
 }
 
 void limpar_tela(){
