@@ -3,17 +3,18 @@
 
 void menu(){
     int op, controle = 0;
+
     Conta conta;
     Lista *lista = (Lista*) malloc(sizeof(Lista));
-    criar_lista(lista);
 
+    criar_lista(lista);
     ler_contas(lista);
 
     do
     {
         limpar_tela();
         printf("\t\n**********************************\n");
-        printf("\t\t\nBANCO ONE\n");
+        printf("\n\tBANCO ONE\n");
         printf("\t\n**********************************\n");
 
         printf("\n0 - Sair\n1 - Login\n2 - Cadastrar\n");
@@ -23,13 +24,9 @@ void menu(){
         switch (op)
         {
             case 1:
-                controle = login(lista, cadatrar_cliente());
-                if(controle == 1){
-                    printf("\nCPF invalido\n");
-                } else{
-                    printf("\nSenha invalida\n");
-                    controle = 1;
-                }
+                controle = login(lista, login_conta());
+                if(controle)
+                    printf("\nErro, cpf ou senha invalido\n");
             break;
 
             case 2: 
@@ -44,15 +41,16 @@ void menu(){
                     salvar_conta(lista); 
                 }
             break;
+
             case 3: adm(lista);
-             break;
+            break;
 
             default: if(op!=0) printf("\nOpção Inválida\n");
-                    //  else salvar_conta(conta, lista);
             break;
         }
     } while (op != 0);
 }
+
 Conta cadatrar_cliente(){
     Conta conta;
 
@@ -64,37 +62,49 @@ Conta cadatrar_cliente(){
     scanf("%29[^\n]", conta.cpf);
     getchar();
 
-    //posso verificar aqui já
-
     printf("\nInforme sua SENHA\n");
     scanf("%29[^\n]", conta.senha);
     getchar();
 
-    conta.saldo = rand() % 50000;
+    conta.saldo = 0;
 
-    //Tenho que verificar se já existe esse cpf nom meu arquivo
-    
     return conta;
 }
+Conta login_conta(){
+    Conta conta;
+
+    printf("\nInforme seu CPF\n");
+    scanf("%29[^\n]", conta.cpf);
+    getchar();
+
+    printf("\nInforme sua SENHA\n");
+    scanf("%29[^\n]", conta.senha);
+    getchar();
+    return conta;
+}
+
+
 int login(Lista *lista, Conta conta){
     No *aux = lista->inicio;
     int controle;
 
     if(!aux) return 1; // não há conta cadastrada
     else{
+        // Vou percorrer minha lista em busca da conta
         while(aux && strcmp(aux->conta.cpf, conta.cpf) != 0)
-            aux = aux->prox;
-      
+              aux = aux->prox;
+              
         if(aux){
             if(strcmp(aux->conta.senha, conta.senha) == 0){
                 printf("\nLogin feito com sucesso\n");
                 painel(aux, lista);
-            }
-            else return 0; // cpf valido senha não valida
+            }else
+                return 1;
         }else
             return 1; 
     }
 }
+
 void imprimir_cliente(Conta conta){
     printf("\n-------------------\n");
     printf("Nome: %s\n", conta.nome);
@@ -103,62 +113,80 @@ void imprimir_cliente(Conta conta){
     printf("Saldo: R$ %.2f\n", conta.saldo);
     printf("\n-------------------\n");
 }
+
 int verificar_cpf(Conta conta, Lista *lista){
     No *aux= lista->inicio;
     int controle = 1;
-    if(!aux){
-        controle = 0;
-    } else {
+
+    if(!aux) controle = 0;
+    else {
+        // Vou verificar se na lista já existe um cpf 
         while(aux && strcmp(aux->conta.cpf , conta.cpf) != 0)
             aux = aux->prox;
         
-        if(aux == NULL)  controle = 0;
+        if(aux == NULL) controle = 0;
     }
     return controle;
 }
+
 void saldo(No *c){
-    limpar_tela();
-    printf("\n*****************\n");
+    printf("\n********Sua conta*********\n");
     printf("\nNome: %s\n", c->conta.nome);
     printf("\nSaldo: R$ %.2f\n", c->conta.saldo);
     printf("\n*****************\n");
 }
+
 void painel(No *conta, Lista *lista){
     limpar_tela();
-    printf("\t\n**********************************\n");
-    printf("\t\t\nBANCO ONE  -> PAINEL\n");
-    printf("\t\n**********************************\n");
-
+    
+    No *novo = malloc(sizeof(No));
     int op;
-
+   
     do{
-        printf("\n0 - sair\n1 - Saldo\n2 - Transferir\n3 - Deposito\n4 - Saque\n5 - historico de transfercia\n");
+        limpar_tela();
+        printf("\t\n**********************************\n");
+        printf("\n\tBANCO ONE  -> PAINEL\n");
+        printf("\t\n**********************************\n");
+
+        printf("\n0 - sair\n1 - Saldo\n2 - Transferir\n3 - Deposito\n4 - Saque\n5 - historico de transferencia\n6 - editar informacoes\n");
         scanf("%d", &op);
         getchar();
 
         switch (op)
         {
-        case 1: saldo(conta);
+        case 1: limpar_tela();
+                saldo(conta);
+                system("pause");
             break;
-        case 2: transferencia(lista, conta);
+
+        case 2: novo = transferencia(lista, conta);
             break;
+
         case 3: deposito(conta);
             break;
+
         case 4: saque(conta);
             break;
-        case 5: 
-            break;
-        default: if(op!=0) printf("\nOpção inválida\n");
-            else salvar_conta(lista); 
-            break;
-        }
 
+        case 5:
+            break;
+
+        case 6: editar_infos(conta, lista);
+            break;
+
+        default:if(op!=0) printf("\nOpção inválida\n");
+                else{
+                        salvar_conta(lista);  
+                    }
+                break;
+        }
     }while(op!=0);
     
 }
 void criar_lista(Lista *lista){
     lista->inicio = NULL;
 }
+
 bool inserir_lista(Lista *lista, Conta conta){
     No *novo = (No*) malloc(sizeof(No)), *aux;
     if(!novo){
@@ -179,6 +207,7 @@ bool inserir_lista(Lista *lista, Conta conta){
         return true;
     }
 }
+
 void salvar_conta(Lista *lista){
     FILE *file = fopen("contas.bin","wb");
     No *aux = lista->inicio;
@@ -193,6 +222,7 @@ void salvar_conta(Lista *lista){
     }     
     fclose(file);
 }
+
 void ler_contas(Lista *lista){
     FILE *file = fopen("contas.bin","rb");
     No *aux = malloc(sizeof(No));
@@ -203,15 +233,18 @@ void ler_contas(Lista *lista){
     }
     fclose(file);
 }
+
+
 void adm(Lista *lista){
     printf("\t\n**********************************\n");
     printf("\t\t\nAREA ADM\n");
     printf("\t\n**********************************\n");
 
     int op;
+    float total;
     do
     {
-        printf("\n0 - sair\n1 - Mostra todos os users\n");
+        printf("\n0 - sair\n1 - Mostra todos os users\n2 - Quantidade de dinheiro no banco\n");
         scanf("%d", &op);
         getchar();
         
@@ -219,7 +252,10 @@ void adm(Lista *lista){
         {
         case 1: imprimir_lista(lista);
             break;
-        case 2:
+        case 2: total = qtd_dinheiro(lista);
+                printf("\n*********************\n");
+                printf("\nTotal de Dinheiro no banho\nR$ %.2f", total);
+                printf("\n*********************\n");
             break;
         case 3:
             break;
@@ -246,8 +282,9 @@ void deposito(No *c){
     printf("\t\n**********************************\n");
     printf("\t\t\nBANCO ONE -> DEPOSITO\n");
     printf("\t\n**********************************\n");
+    saldo(c);
 
-    int deposito;
+    float deposito;
     printf("Informe o valor a ser depositado: ");
     scanf("%f", &deposito);
     getchar();
@@ -261,13 +298,14 @@ void saque(No *c){
     printf("\t\n**********************************\n");
     printf("\t\t\nBANCO ONE -> SAQUE\n");
     printf("\t\n**********************************\n");
+    saldo(c);
     float value;
 
     printf("\nInforme o valor a ser retirado\n");
     scanf("%f", &value);
     getchar();
 
-    //Verifircar se o saldo a ser retirado é maior que o que está na conta
+    //Verificar se o saldo a ser retirado é maior que o que está na conta
     if(value > c->conta.saldo){
         printf("\nSaldo insuficiente\n");
     } else {
@@ -276,11 +314,13 @@ void saque(No *c){
     }
 }
 
-void transferencia(Lista *lista, No *c){
+No* transferencia(Lista *lista, No *c){
     float valor;
     char cpf[30], op;
     No *aux = lista->inicio;
     Conta conta;
+
+    limpar_tela();
     printf("\t\n**********************************\n");
     printf("\t\t\nBANCO ONE -> TRANSFERENCIA\n");
     printf("\t\n**********************************\n");
@@ -313,9 +353,9 @@ void transferencia(Lista *lista, No *c){
             if(op == 's'){
                c->conta.saldo = c->conta.saldo - valor;
                aux->conta.saldo =  aux->conta.saldo + valor;
-                printf("\nTransferenci feita com sucesso\n");
+                printf("\nTransferencia feita com sucesso\n");
             }else if(op == 'n'){
-                printf("\nOk, trnaferencia cancelada\n");
+                printf("\nOk, transferencia cancelada\n");
                 painel(c, lista);
             }else{
                 printf("\nOpcao invalida\n");
@@ -326,10 +366,98 @@ void transferencia(Lista *lista, No *c){
             printf("\nCPF nao exite em nosso sistema\n");
             painel(c, lista);
         }
+        return aux;
     }
 
 }
+
+void editar_infos(No *c, Lista *lista){
+    printf("\t\n**********************************\n");
+    printf("\n\tBANCO ONE  -> EDITAR INFORMACOES\n");
+    printf("\t\n**********************************\n");
+    int op;
+    char newName[30], opt;
+
+    printf("\n0 - sair\n1 - Editar nome\n2 - Excluir sua conta\n");
+    scanf("%d", &op);
+    getchar();
+
+    switch (op)
+    {
+    case 1: 
+        printf("\nInforme um novo nome\n");
+        scanf("%29[^\n]", newName);
+        getchar();
+        strcpy(c->conta.nome, newName);
+
+        if(strcmp(c->conta.nome, newName) == 0){
+            printf("\nAlteracao feita com sucesso\n");
+        } else  {
+            printf("\nErro ao alterar o nome\n");
+        }
+        break;
+
+    case 2: 
+        printf("Tem certeza dessa decisao?\ns - sim\nn - nao\n");
+        scanf("%c", &opt);
+        getchar();
+
+        if(opt == 's' || opt == 'S'){
+            if(remover_conta(c, lista)){ 
+                printf("\nConta removida com sucesso");
+                exit(1);
+            }
+            else
+                printf("\nErro ao remover sua conta\n");
+        }else if(opt == 'n' || opt == 'N'){
+               printf("\nOk, voltando para o menu");
+        }else{
+            printf("\nOpcao invalida\n");
+        }
+        break;
+
+    default: if(op!=0)printf("\nOpcao invalida\n");
+        break;
+    }
+}
+bool remover_conta(No *c, Lista *lista){
+    No*aux , *remover = malloc(sizeof(No));
+
+    aux = lista->inicio;
+    if(aux){
+        if(strcmp(aux->conta.cpf, c->conta.cpf) == 0){
+            remover = lista->inicio;
+            lista->inicio = remover->prox;
+        }else {
+            while (aux->prox && strcmp(aux->prox->conta.cpf, c->conta.cpf) != 0)
+                aux = aux->prox;
+
+            if(aux){
+                remover = aux->prox;
+                aux->prox = remover->prox;
+            } else
+                return false;
+        }
+        free(remover);
+        salvar_conta(lista);
+
+        return true;
+    }
+}
+
+float qtd_dinheiro(Lista *lista){
+    No *aux = lista->inicio;
+    float total = 0;
+
+    while(aux){
+        total += aux->conta.saldo;
+        aux = aux->prox;
+    }
+
+    return total;
+}
+
 void limpar_tela(){
-    Sleep(1500);
+    Sleep(1000);
     system("cls");
 }
