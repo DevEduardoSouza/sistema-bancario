@@ -1,6 +1,6 @@
 #include "bibliotecas.h"
 //gcc main.c lista.c -o main.exe
-// Fazer uma fucção que salve historicos de saque, deposito, trnasferencia, data de criação, data de login, data de alteração
+
 
 void menu(){
     int op, controle = 0;
@@ -18,7 +18,7 @@ void menu(){
         printf("\n\tBANCO ONE\n");
         printf("\t\n**********************************\n");
 
-        printf("\n0 - Sair\n1 - Login\n2 - Cadastrar\n");
+        printf("\n0 - Sair\n1 - Login\n2 - Cadastrar\n3 - adm");
         scanf("%d", &op);
         getchar();
 
@@ -149,7 +149,7 @@ void painel(No *conta, Lista *lista){
         printf("\n\tBANCO ONE  -> PAINEL\n");
         printf("\t\n**********************************\n");
 
-        printf("\n0 - sair\n1 - Saldo\n2 - Transferir\n3 - Deposito\n4 - Saque\n5 - historico de transferencia\n6 - editar informacoes\n");
+        printf("\n0 - sair\n1 - Saldo\n2 - Transferir\n3 - Deposito\n4 - Saque\n\n5 - editar informacoes\n");
         scanf("%d", &op);
         getchar();
 
@@ -169,10 +169,7 @@ void painel(No *conta, Lista *lista){
         case 4: saque(conta);
             break;
 
-        case 5:
-            break;
-
-        case 6: editar_infos(conta, lista);
+        case 5: editar_infos(conta, lista);
             break;
 
         default:if(op!=0) printf("\nOpção inválida\n");
