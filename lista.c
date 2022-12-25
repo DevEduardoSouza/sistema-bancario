@@ -18,7 +18,7 @@ void menu(){
         printf("\n\tBANCO ONE\n");
         printf("\t\n**********************************\n");
 
-        printf("\n0 - Sair\n1 - Login\n2 - Cadastrar\n3 - adm");
+        printf("\n0 - Sair\n1 - Login\n2 - Cadastrar\n3 - adm\n");
         scanf("%d", &op);
         getchar();
 
@@ -149,7 +149,7 @@ void painel(No *conta, Lista *lista){
         printf("\n\tBANCO ONE  -> PAINEL\n");
         printf("\t\n**********************************\n");
 
-        printf("\n0 - sair\n1 - Saldo\n2 - Transferir\n3 - Deposito\n4 - Saque\n\n5 - editar informacoes\n");
+        printf("\n0 - sair\n1 - Saldo\n2 - Transferir\n3 - Deposito\n4 - Saque\n5 - editar informacoes\n");
         scanf("%d", &op);
         getchar();
 
@@ -252,7 +252,7 @@ void adm(Lista *lista){
             break;
         case 2: total = qtd_dinheiro(lista);
                 printf("\n*********************\n");
-                printf("\nTotal de Dinheiro no banho\nR$ %.2f", total);
+                printf("\nTotal de Dinheiro no banco\nR$ %.2f", total);
                 printf("\n*********************\n");
             break;
         case 3: data_hora();
